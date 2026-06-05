@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eshop.mapper.OrderMapper">
+
+    <resultMap id="orderVOMap" type="com.eshop.vo.OrderVO">
+        <id property="id" column="id"/>
+        <result property="orderNo" column="order_no"/>
+        <result property="userId" column="user_id"/>
+        <result property="merchantId" column="merchant_id"/>
+        <result property="merchantName" column="merchant_name"/>
+        <result property="totalAmount" column="total_amount"/>
+        <result property="status" column="status"/>
+        <result property="receiverName" column="receiver_name"/>
+        <result property="phone" column="phone"/>
+        <result property="address" column="address"/>
+        <result property="remark" column="remark"/>
+        <result property="payTime" column="pay_time"/>
+        <result property="deliveryTime" column="delivery_time"/>
+        <result property="completeTime" column="complete_time"/>
+        <result property="cancelTime" column="cancel_time"/>
+        <result property="createdAt" column="created_at"/>
+        <collection property="items" ofType="com.eshop.vo.OrderVO$OrderItemVO">
+            <result property="id" column="item_id"/>
+            <result property="productId" column="product_id"/>
+            <result property="productName" column="product_name"/>
+            <result property="productImage" column="product_image"/>
+            <result property="price" column="item_price"/>
+            <result property="quantity" column="item_quantity"/>
+            <result property="totalAmount" column="item_total"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectOrderPage" resultType="com.eshop.vo.OrderVO">
+        SELECT o.*, u.store_name AS merchant_name
+        FROM `order` o
+        LEFT JOIN user u ON o.merchant_id = u.id
+        WHERE o.deleted = 0
+        <if test="userId != null">AND o.user_id = #{userId}</if>
+        <if test="merchantId != null">AND o.merchant_id = #{merchantId}</if>
+        <if test="status != null and status != ''">AND o.status = #{status}</if>
+        ORDER BY o.created_at DESC
+    </select>
+
+    <select id="selectOrderDetail" resultMap="orderVOMap">
+        SELECT o.*, u.store_name AS merchant_name,
+               oi.id AS item_id, oi.product_id, oi.product_name, oi.product_image,
+               oi.price AS item_price, oi.quantity AS item_quantity, oi.total_amount AS item_total
+        FROM `order` o
+        LEFT JOIN user u ON o.merchant_id = u.id
+        LEFT JOIN order_item oi ON o.id = oi.order_id
+        WHERE o.id = #{id} AND o.deleted = 0
+    </select>
+
+    <select id="selectStats" resultType="java.util.Map">
+        SELECT
+            COUNT(*) AS total_orders,
+            IFNULL(SUM(CASE WHEN status IN ('COMPLETED', 'DELIVERED', 'REFUNDED') THEN total_amount ELSE 0 END), 0) AS total_sales,
+            IFNULL(SUM(CASE WHEN status = 'PENDING_DELIVERY' THEN 1 ELSE 0 END), 0) AS pending_delivery,
+            IFNULL(SUM(CASE WHEN status = 'REFUNDING' THEN 1 ELSE 0 END), 0) AS refunding
+        FROM `order`
+        WHERE deleted = 0
+        <if test="merchantId != null">AND merchant_id = #{merchantId}</if>
+    </select>
+
+</mapper>

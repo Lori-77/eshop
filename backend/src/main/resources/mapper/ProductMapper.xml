@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eshop.mapper.ProductMapper">
+
+    <select id="selectProductPage" resultType="com.eshop.vo.ProductVO">
+        SELECT p.*, c.name AS category_name, u.store_name AS merchant_name
+        FROM product p
+        LEFT JOIN category c ON p.category_id = c.id
+        LEFT JOIN user u ON p.merchant_id = u.id
+        WHERE p.deleted = 0
+        <if test="categoryId != null">
+            AND (p.category_id = #{categoryId}
+                 OR p.category_id IN (SELECT id FROM category WHERE parent_id = #{categoryId}))
+        </if>
+        <if test="keyword != null and keyword != ''">
+            AND p.name LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+        <if test="status != null and status != ''">
+            AND p.status = #{status}
+        </if>
+        <if test="merchantId != null">
+            AND p.merchant_id = #{merchantId}
+        </if>
+        <choose>
+            <when test="sort == 'price_asc'">ORDER BY p.price ASC</when>
+            <when test="sort == 'price_desc'">ORDER BY p.price DESC</when>
+            <when test="sort == 'sales_desc'">ORDER BY p.sales DESC</when>
+            <when test="sort == 'new_desc'">ORDER BY p.created_at DESC</when>
+            <otherwise>ORDER BY p.id DESC</otherwise>
+        </choose>
+    </select>
+
+    <select id="selectProductById" resultType="com.eshop.vo.ProductVO">
+        SELECT p.*, c.name AS category_name, u.store_name AS merchant_name
+        FROM product p
+        LEFT JOIN category c ON p.category_id = c.id
+        LEFT JOIN user u ON p.merchant_id = u.id
+        WHERE p.id = #{id} AND p.deleted = 0
+    </select>
+
+</mapper>
