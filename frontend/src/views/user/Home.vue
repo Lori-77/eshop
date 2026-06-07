@@ -2,12 +2,13 @@
   <div class="home">
     <!-- Banner 轮播 -->
     <div class="banner">
-      <div class="banner-slide banner-1">
-        <div class="banner-text">
-          <h2>品质生活，从这里开始</h2>
-          <p>精选好物，限时特惠</p>
-        </div>
-      </div>
+      <el-carousel :interval="4000" arrow="always" height="360px">
+        <el-carousel-item v-for="(item, idx) in banners" :key="idx">
+          <div class="banner-slide">
+            <img :src="item.image" class="banner-img" />
+          </div>
+        </el-carousel-item>
+      </el-carousel>
     </div>
 
     <!-- 分类标签 -->
@@ -95,6 +96,13 @@ import { getProducts, getCategories } from '@/api'
 const route = useRoute()
 const router = useRouter()
 
+// 页头轮播图，改图片路径即可
+const banners = ref([
+  { image: '/uploads/banner1.jpg' },
+  { image: '/uploads/banner2.jpg' },
+  { image: '/uploads/banner3.jpg' },
+])
+
 const products = ref([])
 const categories = ref([])
 const total = ref(0)
@@ -180,11 +188,8 @@ onMounted(async () => {
 .home { padding-bottom: 40px; }
 
 .banner { margin-bottom: 24px; border-radius: 8px; overflow: hidden; }
-.banner-slide { height: 280px; display: flex; align-items: center; justify-content: center; }
-.banner-1 { background: linear-gradient(135deg, #1890ff 0%, #096dd9 50%, #0050b3 100%); }
-.banner-text { text-align: center; color: #fff; }
-.banner-text h2 { font-size: 36px; margin-bottom: 12px; }
-.banner-text p { font-size: 18px; opacity: 0.85; }
+.banner-slide { position: relative; width: 100%; height: 100%; }
+.banner-img { width: 100%; height: 100%; object-fit: cover; }
 
 .categories-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
 .cat-tag { cursor: pointer; font-size: 14px; }

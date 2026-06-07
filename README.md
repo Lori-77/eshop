@@ -19,7 +19,7 @@
 
 ### 用户端
 - 注册 / 登录 / 个人中心
-- 商品浏览（分类、搜索、排序）
+- 首页轮播图 + 商品浏览（分类、搜索、排序）
 - 购物车（加入、修改数量、删除）
 - 下单结算 / 模拟支付
 - 订单管理（查看、取消、确认收货）
@@ -116,7 +116,7 @@ npm run dev
 UPDATE product SET main_image = '/uploads/图片名.jpg' WHERE id = 1;
 ```
 
-前端会自动通过 `/uploads/` 路径加载图片。
+首页轮播图替换 `banner1.jpg`、`banner2.jpg`、`banner3.jpg` 即可。
 
 ## API 概览
 
@@ -124,7 +124,7 @@ UPDATE product SET main_image = '/uploads/图片名.jpg' WHERE id = 1;
 |------|------|------|------|
 | 认证 | POST | /api/auth/login | 登录 |
 | 认证 | POST | /api/auth/register | 注册 |
-| 商品 | GET | /api/products | 商品列表（支持分类、搜索、排序） |
+| 商品 | GET | /api/products | 商品列表（分类、搜索、排序） |
 | 商品 | GET | /api/products/{id} | 商品详情 |
 | 分类 | GET | /api/categories | 分类树 |
 | 购物车 | GET POST DELETE | /api/cart | 购物车 CRUD |
@@ -133,3 +133,4 @@ UPDATE product SET main_image = '/uploads/图片名.jpg' WHERE id = 1;
 | 退款 | POST | /api/refunds | 申请退款 |
 | 商家 | POST | /api/merchant/ship | 发货 |
 | 管理 | GET | /api/admin/stats | 数据统计 |
+| 上传 | POST | /api/upload | 图片上传 |

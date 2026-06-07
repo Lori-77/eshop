@@ -46,9 +46,6 @@
     </header>
     <nav class="nav" v-if="showNav">
       <div class="nav-inner">
-        <div class="categories-dropdown">
-          <span class="all-cats">全部商品分类</span>
-        </div>
         <router-link to="/" class="nav-item">首页</router-link>
         <a class="nav-item" v-for="cat in categories" :key="cat.id"
            @click="$router.push({ path: '/', query: { categoryId: cat.id } })">{{ cat.name }}</a>
@@ -58,7 +55,7 @@
       <router-view />
     </main>
     <footer class="footer">
-      <p>© 2026 网上购物商城 - 软件工程大作业</p>
+      <p>© 2026 网上购物商城</p>
     </footer>
   </div>
 </template>
@@ -121,7 +118,6 @@ onMounted(async () => {
 .header-btn { color: #333; font-size: 14px; cursor: pointer; }
 .nav { background: #1890ff; }
 .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; padding: 0 20px; height: 40px; }
-.all-cats { color: #fff; font-size: 14px; font-weight: bold; margin-right: 24px; cursor: pointer; }
 .nav-item { color: rgba(255,255,255,0.9); font-size: 14px; margin-right: 20px; cursor: pointer; }
 .nav-item:hover { color: #fff; }
 .main { flex: 1; max-width: 1200px; margin: 0 auto; padding: 20px; width: 100%; }
